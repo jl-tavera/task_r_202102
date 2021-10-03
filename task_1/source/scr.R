@@ -9,10 +9,11 @@
 #==========#
 
 
-#Funciones Iniciales
-rm(list=ls())
-require(pacman)
-p_load(tidyverse,rio,skimr)
+#Configuración Inicial
+
+rm(list = ls()) # limpia el entorno de R
+require(pacman)  # Instalar la librería pacman
+p_load(tidyverse,rio,skimr,haven) # Llamar y/o instalar las librerías necesarias
 
 
 
@@ -61,23 +62,40 @@ pares = totales[!totales  %in% impares]
 
 data = import("task_1/data/input/cultivos.xlsx")
 
-# renombrar datos
+#Lo anterior cargará una base de datos de 359 obs y 25 variable
+
+# 2) Limpiemos la base de datos 
+
+
+# 2.1) renombrar datos
 colnames(data) = data[4,] %>% tolower()
 
-# covertir codmpio en numerica
+# 2.2) Para poder leer el codmpio convirtamolo a numerico
 data$codmpio = as.numeric(data$codmpio)
 
-# eliminar NA
+# 2.3) eliminar NA que no tienen información alguna, las filas de totales y las 
+#primeras 4 filas que no tenían información 
+
 data = data %>% drop_na(codmpio)
 
-# convertir variables en numericas
-years = 1999:2007 %>% as.character()
+
+# 3) Pivotear los datos
+#Pivotear longer significa disminuir el numero de columnas y aumentar el numero de filas.
+#Como no se específica la variable lo haremos con las columnas de años enlistadas en filas
+
+# convertir variables en numericas todos los años hasta 2019
+
+years = 1999:2019 %>% as.character()
 for(var in years){
-    data[,var] = as.numeric(data[,var])
+  data[,var] = as.numeric(data[,var])
 }
 
-# pivotear los datos
 pivot = data %>% pivot_longer(!coddepto:municipio,names_to="year",values_to="ha_cultivos")
+
+#Incluso adicionalmente como muchos municipios no tienen cultivos en algunos años 
+#Se podría dropear estos NA
+
+pivot = pivot %>% drop_na(ha_cultivos)
 
 #=========#
 # Punto 3 #
