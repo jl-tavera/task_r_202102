@@ -61,11 +61,9 @@ pares = totales[!totales  %in% impares]
 # 1) iImportamos los datos correspondientes con la función de import
 
 data = import("task_1/data/input/cultivos.xlsx")
-
 #Lo anterior cargará una base de datos de 359 obs y 25 variable
 
 # 2) Limpiemos la base de datos 
-
 
 # 2.1) renombrar datos
 colnames(data) = data[4,] %>% tolower()
@@ -78,13 +76,11 @@ data$codmpio = as.numeric(data$codmpio)
 
 data = data %>% drop_na(codmpio)
 
-
 # 3) Pivotear los datos
 #Pivotear longer significa disminuir el numero de columnas y aumentar el numero de filas.
 #Como no se específica la variable lo haremos con las columnas de años enlistadas en filas
 
 # convertir variables en numericas todos los años hasta 2019
-
 years = 1999:2019 %>% as.character()
 for(var in years){
   data[,var] = as.numeric(data[,var])
@@ -94,23 +90,50 @@ pivot = data %>% pivot_longer(!coddepto:municipio,names_to="year",values_to="ha_
 
 #Incluso adicionalmente como muchos municipios no tienen cultivos en algunos años 
 #Se podría dropear estos NA
-
 pivot = pivot %>% drop_na(ha_cultivos)
 
 #=========#
 # Punto 3 #
 #=========#
 
-# punto 3
-cabe_cg = readRDS("task_1/data/input/2019/Cabecera - Caracteristicas generales (Personas).rds")
+#3.1) IMPORTAR
 
-cabe_ocu = readRDS("task_1/data/input/2019/Cabecera - Ocupados.rds") %>% mutate(ocupado=1)
+#Importamos la base de datos general y mantenemos las columnas de interés
+cabe_cg = readRDS("task_1/data/input/2019/Cabecera - Caracteristicas generales (Personas).rds") %>%
+          select(.,c("secuencia_p","orden","directorio","P6020", "P6040",
+             "P6050", "fex_c_2011", "ESC", "dpto", ))
 
-cabe_des = readRDS("task_1/data/input/2019/Cabecera - Desocupados.rds") %>% mutate(desocupado=1)
+#Importamos la base de datos de ocupados, generamos la variable de ocupado = 1 
+#ya que todas las observaciones son ocupados y dejamos las columnas de interés
+#que serán las necesarias para el left_join, el ingreso y la variable creada
+cabe_ocu = readRDS("task_1/data/input/2019/Cabecera - Ocupados.rds") %>% mutate(ocupado=1) %>%
+           select(., c("secuencia_p","orden","directorio","ocupado", "INGLABO"))
 
-# unir datos
+#Importamos la base de datos de desocupados, generamos la variable de desocupado = 1 
+#ya que todas las observaciones son desocupados y dejamos las columnas de interés
+#que serán las necesarias para el left_join y la variable creada
+cabe_des = readRDS("task_1/data/input/2019/Cabecera - Desocupados.rds") %>% mutate(desocupado=1)  %>%
+  select(., c("secuencia_p","orden","directorio","desocupado"))
+
+#Importamos la base de datos de inactivos, generamos la variable de inactivos = 1 
+#ya que todas las observaciones son inactivos y dejamos las columnas de interés
+#que serán las necesarias para el left_join y la variable creada
+cabe_inac = readRDS("task_1/data/input/2019/Cabecera - Inactivos.rds") %>% mutate(inactivos=1) %>%
+  select(., c("secuencia_p","orden","directorio","inactivos"))
+
+#Importamos la base de datos de fuerza de trabajo, generamos la variable de ftrabajo = 1 
+#ya que todas las observaciones son fuerza de trabajo y dejamos las columnas de interés
+#que serán las necesarias para el left_join y la variable creada
+cabe_ftrabajo = readRDS("task_1/data/input/2019/Cabecera - Fuerza de trabajo.rds") %>% mutate(ftrabajo=1) %>%
+  select(., c("secuencia_p","orden","directorio","ftrabajo"))
+
+
+# Hacemos el merge usando el left join con cada una de las bases y el producto del left join previo
 geih = left_join(cabe_cg,cabe_ocu,c("secuencia_p","orden","directorio")) %>%
-        left_join(.,cabe_des,c("secuencia_p","orden","directorio")) 
+        left_join(.,cabe_des,c("secuencia_p","orden","directorio")) %>%
+        left_join(.,cabe_inac,c("secuencia_p","orden","directorio")) %>%
+        left_join(.,cabe_ftrabajo,c("secuencia_p","orden","directorio")) 
+
 
 skim(geih)
 
