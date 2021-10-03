@@ -1,43 +1,64 @@
+#==================================#
+#             TALLER R             #
+# JOSE LUIS TAVERA RUIZ - 20821999 #
+#    UNIVERSIDAD DE LOS ANDES      #
+#==================================#
 
-#
+#==========#
+# Taller A #
+#==========#
+
+
+#Funciones Iniciales
 rm(list=ls())
 require(pacman)
 p_load(tidyverse,rio,skimr)
+
+
 
 #=========#
 # Punto 1 #
 #=========#
 
-1:100
-n_1_100 = seq(1,100,1)
+#Cree vectores que contengan los números del 1 al 100, posteriormente cree otro
+#vector que contenga los números impares del 1 al 99 y use el vector de numeros 
+#impares para crear un vector con los numeros pares del primer vector
+
+#Para crear el vector de todos los numeros del 1 al 100 que denominaremos totales
+#Usaremos la función seq que crea un vector con una secuencia, en este caso numérica
+#Los tres argumentos son el límite inferior, superior y la suma
+
+totales = seq(1,100,1) 
+
+#Para verificar si es vector y su tipo usamos las funciones is.atomic y typeof
+print(is.atomic(totales))
+print(typeof(totales))
+
+
+#Análogamente construimos el vector de impares de la forma 2n + 1 con la función seq
+
 impares = seq(1,99,2)
-pares = 
-  
-a = 10:15
-a
-a[1]
-a[4]
-a[2]
-a[-4]
 
-1:5 %in% 3:6 
+print(is.atomic(impares))
+print(typeof(impares))
 
-!1:5 %in% 3:6
+#Ahora bien, para crear el vector de Pares podemos usar los totales con la condición
+#de que se haga drop a todos los elementos que están ya en impares, ya que un número
+# solo puede ser par o impar, para esto se usan los operadoress "!" e "%in%"
 
-!n_1_100  %in% impares
-n_1_100[!n_1_100  %in% impares]
-
-a[c(T,F,F,F,F,T)]
-
-
-pares = n_1_100[!n_1_100  %in% impares]
-
+pares = totales[!totales  %in% impares]
 
 #=========#
 # Punto 2 #
 #=========#
 
-# importar datos
+# Importe la base de datos de cultivos que se encuentra en la carpeta de data/input
+# limpie la base de datos eliminando las observaciones que no tienen informacion relevante
+# Luego pivotee la base de datos para que quede en formato long
+
+
+# 1) iImportamos los datos correspondientes con la función de import
+
 data = import("task_1/data/input/cultivos.xlsx")
 
 # renombrar datos
