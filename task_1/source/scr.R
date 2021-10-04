@@ -4,7 +4,7 @@
 #    UNIVERSIDAD DE LOS ANDES      #
 #==================================#
 
-#git version 2.24.3 (Apple Git-128)
+#R version 4.1.0
 
 #==========#
 # Taller A #
