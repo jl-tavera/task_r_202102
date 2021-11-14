@@ -23,7 +23,7 @@ p_load(rio,tidyverse)
 
 #1.0. Crear lista: Cree un objeto tipo lista vacío, llámelo chip.
 
-chip = list()
+chip = list() #usamos el comando de list() para generar una lista vacía
 
 #1.1. Importar datos: Use un loop para importar cada archivo .xlsx de data/imput
 # en un elemento/posición diferente de chip.
