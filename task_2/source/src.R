@@ -1,3 +1,14 @@
+#==================================#
+#             TALLER R             #
+# JOSE LUIS TAVERA RUIZ - 20821999 #
+#    UNIVERSIDAD DE LOS ANDES      #
+#==================================#
+
+#R version 4.1.0
+
+#==========#
+# Taller A #
+#==========#
 
 # librerias
 rm(list=ls())
