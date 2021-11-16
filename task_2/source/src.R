@@ -125,7 +125,13 @@ for (i in 1:length(valores)) {
 df_final <- df_final[-1,]
 
 
+#======================#
+# Referencias & Ayudas #
+#======================#
 
+browseURL("https://www.math.ucla.edu/~anderson/rw1001/library/base/html/strsplit.html")
+browseURL("https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/lapply")
+browseURL("https://stackoverflow.com/questions/7541610/how-to-delete-the-first-row-of-a-dataframe-in-r")
 
 
 
