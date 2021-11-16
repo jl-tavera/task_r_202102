@@ -59,35 +59,37 @@ for (i in 1:length(rutas)){
 #2.0. Crear función: Cree una función que extraiga de un dataframe 
 # dentro de chip, el valor PAGOS(Pesos) para la categoría EDUCACION. 
 
+# Analizando los archivos de los dataframe, todos tienen el mismo formato
+# con los nombres de las columnas en la fila 7 y el valor de PAGOS(Pesos) en la columna 8
+
+
 pagos = function(n,lista,tipo){
+  #Extraemos un dataframe en específico en la posición 'n' de chip
   lista_n = lista[[n]] 
-  colnames(lista_n) = lista_n[7,]
-valor = lista_n %>% subset(NOMBRE==tipo) %>% select(`PAGOS(Pesos)`)
-return(valor)  
-}
-f_extrac(n = 10 , lista = list_chip , tipo = "EDUCACIÓN")
-
-
-# Completando la funcion
-f_extrac = function(n,lista,tipo){
   
-  # crear df
+  # Creamos el dataframe con los tres datos que nos piden 
   df = data.frame(valor=NA,cod_dane=NA,periodo=NA)  
-  lista_n = lista[[n]] 
   
-  # extraer codigo dane
+  #Asimismo,  extraemos el codigo dane
   df$cod_dane = colnames(lista_n)[1]
   
-  # extraer periodo
+  # Y por ultimo, el periodo
   df$periodo = lista_n[2,1]
   
-  # extraer el valor
+  # Definimos los nombres de las columnas que se encuentraan la fila 7
   colnames(lista_n) = lista_n[7,]
-  df$valor = lista_n %>% subset(NOMBRE==tipo_rubro) %>% select(`PAGOS(Pesos)`)
+  
+  # filtramos por el tipo (que dejamos como argumento y podemos llenar por EDUCACIÓN)
+  # Seleccionamos finalmente el valor correspondiente a PAGOS(Pesos)
+  df$valor = lista_n %>% subset(NOMBRE==tipo) %>% select(`PAGOS(Pesos)`)
 
+  # retornamos el dataframe
 return(df)  
 }
-f_extrac(n = 10 , lista = list_chip , tipo_rubro = "SALUD")
+
+# Verificamos que la función sirva para un n aleatorio
+
+pago_16 = pagos(n = 10, lista = chip , tipo = "SALUD")
 
 #========================#
 # Punto 3 Familia Apply  #
@@ -96,8 +98,7 @@ f_extrac(n = 10 , lista = list_chip , tipo_rubro = "SALUD")
 # 3.0. Aplique la función creada en el punto anterior a todos los elementos 
 # de la lista chip.
 
-
-
+valores = lapply(1:length(rutas), pagos(n = i, lista = chip, tipo = "SALUD")) 
 
 
 
