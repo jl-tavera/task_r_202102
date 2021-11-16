@@ -7,7 +7,7 @@
 #R version 4.1.0
 
 #==========#
-# Taller A #
+# Taller B #
 #==========#
 
 # Configuración Inicial 
@@ -59,9 +59,10 @@ for (i in 1:length(rutas)){
 #2.0. Crear función: Cree una función que extraiga de un dataframe 
 # dentro de chip, el valor PAGOS(Pesos) para la categoría EDUCACION. 
 
+
 # Analizando los archivos de los dataframe, todos tienen el mismo formato
 # con los nombres de las columnas en la fila 7 y el valor de PAGOS(Pesos) en la columna 8
-
+# el código DANE como primer nombre de columna y el periodo en la posición (2,1)
 
 pagos = function(sublist,lista,tipo){
   #Extraemos un dataframe en específico en la posición 'n' de chip
@@ -103,6 +104,27 @@ valores = lapply(chip, function(x) pagos(x, lista = chip, tipo = 'EDUCACIÓN' ) 
 # Para lo anterior fue necesario modificar el argumento de n de pagos, ya que 
 # por si solo el lapply itera todos los elementos de la lista por lo que no necesita
 # la posición de la lista para extraer cada uno de los archivos
+
+#============================#
+# Extra Dataframe de la Info #
+#============================#
+
+# Ahora bien, lo ideal sería organizar toda la información en un dataframe
+#ya que la función lapply devuelve una lista de dataframes donde se aplicó la función
+
+df_final = data.frame(municipio = NA,cod_dane=NA,periodo=NA, valor=NA)  
+
+for (i in 1:length(valores)) {
+  
+  sub_df = valores[[i]]
+  ciudad_str = strsplit(sub_df$cod_dane, split = "-")[[1]]  %>%  unlist()
+  df_final[nrow(df_final) + 1 ,] = c(ciudad_str[[2]],  ciudad_str[[1]], sub_df$periodo, sub_df$valor)   
+
+}
+
+df_final <- df_final[-1,]
+
+
 
 
 
