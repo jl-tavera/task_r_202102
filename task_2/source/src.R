@@ -45,7 +45,7 @@ rutas = lapply(2017:2020 , function(paths) list.files(paste0("task_2/data/imput/
         unlist()
 
 #Finalmente para importar los datos, solo debemos recorrer el vector rutas en un  
-# for usando la función de import y guardarlo en la lista chip, terminand con los 
+# for usando la función de import y guardarlo en la lista chip, terminand0 con los 
 # 80 elementos mencionados en el enunciado 
 
 for (i in 1:length(rutas)){
@@ -63,9 +63,9 @@ for (i in 1:length(rutas)){
 # con los nombres de las columnas en la fila 7 y el valor de PAGOS(Pesos) en la columna 8
 
 
-pagos = function(n,lista,tipo){
+pagos = function(sublist,lista,tipo){
   #Extraemos un dataframe en específico en la posición 'n' de chip
-  lista_n = lista[[n]] 
+  lista_n = sublist
   
   # Creamos el dataframe con los tres datos que nos piden 
   df = data.frame(valor=NA,cod_dane=NA,periodo=NA)  
@@ -75,6 +75,7 @@ pagos = function(n,lista,tipo){
   
   # Y por ultimo, el periodo
   df$periodo = lista_n[2,1]
+  
   
   # Definimos los nombres de las columnas que se encuentraan la fila 7
   colnames(lista_n) = lista_n[7,]
@@ -87,10 +88,6 @@ pagos = function(n,lista,tipo){
 return(df)  
 }
 
-# Verificamos que la función sirva para un n aleatorio
-
-pago_16 = pagos(n = 10, lista = chip , tipo = "SALUD")
-
 #========================#
 # Punto 3 Familia Apply  #
 #========================#
@@ -98,7 +95,16 @@ pago_16 = pagos(n = 10, lista = chip , tipo = "SALUD")
 # 3.0. Aplique la función creada en el punto anterior a todos los elementos 
 # de la lista chip.
 
-valores = lapply(1:length(rutas), pagos(n = i, lista = chip, tipo = "SALUD")) 
+# Lo anterior lo podemos hacer con la función de lapply que permite aplicar una función
+# a todos los elementos pertenecientes a nuestra lista, en nuestro caso esta lista es chip
+
+valores = lapply(chip, function(x) pagos(x, lista = chip, tipo = 'EDUCACIÓN' ) ) 
+
+# Para lo anterior fue necesario modificar el argumento de n de pagos, ya que 
+# por si solo el lapply itera todos los elementos de la lista por lo que no necesita
+# la posición de la lista para extraer cada uno de los archivos
+
+
 
 
 
