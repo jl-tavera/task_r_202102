@@ -81,16 +81,22 @@ skim(c_medico)
 # 1.3.1 Para todos los objetos del punto 1.1., pinte sobre la consola la caja de 
 # coordenadas (st _bbox) y el CRS de cada objeto.
 
-vars <- list(c_medico, c_poblado, depto)
+vars <- list(via, puntos, c_medico, c_poblado, depto, mapmuse)
+vars_names <- list('via', 'puntos', 'c_medico', 'c_poblado', 'depto' ,'mapmuse')
+i = 1
 
-for (var in vars){
-
+for(var in vars){
+  print(vars_names[i])
   print('Caja de Coordenadas')
-  print(var %>% st_bbox())
+  print(var  %>%  st_bbox())
   print('CRS')
-  print(var%>% st_crs())
+  print(var  %>%  st_crs())
   print('')
+  i <- i + 1 
 }
+
+# 1.3.2 Ahora va a re proyectar el CRS de todos los objetos. Asigne la siguiente 
+# CRS+proj=utm+zone=19 +datum=WGS84 +units=m +no_ defs a todos los objetos del punto 1.1..
 
 
 
