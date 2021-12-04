@@ -15,9 +15,8 @@
 
 rm(list=ls())
 if (!require("pacman")) install.packages("pacman") # Instalar pacman (sino está instalada)
-require(pacman) 
-p_load(rio,tidyverse,viridis,sf,leaflet,osmdata,ggsn,skimr,ggmap,tidycensus) # llamar y/o instalar librerias
-
+require(pacman) # Correr la LIbrería de Pacman 
+p_load(rio,tidyverse,viridis,sf,leaflet,osmdata,ggsn,skimr,ggmap,tidycensus,raster,maps) # llamar y/o instalar librerias
 if(sessionInfo()$loadedOnly$Rcpp$Version!="1.0.7") update.packages("Rcpp") # Para la librería OSM necesitamos la versión 1.0.7 de Rcpp 
 Sys.setlocale("LC_CTYPE", "en_US.UTF-8") # Encoding UTF-8
 
@@ -37,10 +36,31 @@ puntos = st_read("task_3/data/input/MGN_URB_TOPONIMIA.shp")
 #1.1.2 Cree un nuevo objeto llamado c_medico, que contenga las observaciones del
 #objeto puntos en las que la variable CSIMBOL sea igual a "021001" "021002" o "021003".
 
-c_medico = puntos %>% filter(CSIMBOL == "021001" | CSIMBOL == "021002" |CSIMBOL ==  "021003" )
+c_medico = puntos %>% filter(  CSIMBOL == "021001" 
+                             | CSIMBOL == "021002" 
+                             | CSIMBOL ==  "021003" )
 
 #1.1.3 De la carpeta data/output importe los c poblado (2017).rds (llame al objeto c poblado).
-# Asegúrese de dejar únicamente código DANE >= 54001 & < 55000 y el polígono de Norte de Santander.
 
+c_poblado = readRDS("task_3/data/input/c poblado (2017).rds")
+
+# 1.1.3 dp deptos (2017).rds (llame al objeto depto) 
+
+depto = readRDS("task_3/data/input/dp deptos (2017).rds")
+
+# y victimas_map-muse.rds (llame al objeto mapmuse).
+
+mapmuse = readRDS("task_3/data/input/victimas_map-muse.rds")
+
+# Asegúrese de dejar únicamente código DANE >= 54001 & < 55000 
+
+c_poblado = c_poblado %>% filter( cod_dane >= 54001, cod_dane < 55000 )
+mapmuse = mapmuse %>% filter( cod_mpio >= 54001, cod_mpio < 55000 )
+
+#y el polígono de Norte de Santander.
+
+depto = depto %>% filter( cod_dpto == 54)
+
+# 1.2 Atributos de los Objetos 
 
 
