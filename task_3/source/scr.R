@@ -63,4 +63,34 @@ depto = depto %>% filter( cod_dpto == 54)
 
 # 1.2 Atributos de los Objetos 
 
+#Sacamos algunas estadísiticas descriptivas de los objetos de 
+
+# Centro Poblado
+skim(c_poblado)
+
+# Mapmuse
+skim(mapmuse)
+
+# Centro Médico
+skim(c_medico)
+
+# El resto de objetos son muy grandes o no tienen estadísiticas descriptivas interesantes
+
+# 1.3 Geometrías del Objeto 
+
+# 1.3.1 Para todos los objetos del punto 1.1., pinte sobre la consola la caja de 
+# coordenadas (st _bbox) y el CRS de cada objeto.
+
+vars <- list(c_medico, c_poblado, depto)
+
+for (var in vars){
+
+  print('Caja de Coordenadas')
+  print(var %>% st_bbox())
+  print('CRS')
+  print(var%>% st_crs())
+  print('')
+}
+
+
 
