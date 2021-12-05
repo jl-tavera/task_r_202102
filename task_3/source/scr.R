@@ -150,7 +150,18 @@ mapmuse_crop = st_crop(mapmuse,depto)
 #1.4.2 Del objeto c poblado, seleccione cualquier municipio, use este polígono y el objeto via,
 # para calcular el largo de las vías en el centro poblado que seleccionó.
 
+# Mejor que seleccionar un municipio simplemente generamos un input para que el usuario ponga el código
+# En caso de que se quisiese ver un municipio en específico simplemente se pone el código en lugar del readline
 
+cod <- readline("Inserte el código del municipio: ") 
+
+# Se filtran los centros poblados correspondientes al código del municipio y se hace cliping
+c_poblados_mpio =c_poblado %>% filter(codmpio== strtoi(cod))
+via_mpio = st_crop(via,c_poblados_mpio)
+
+# Se guarda la variabe length como el length via 
+via_mpio =via_mpio%>%mutate(length_via="")
+via_mpio$largo_de_via=st_length(via_mpio)
 
 
 # Pintar Mapas
