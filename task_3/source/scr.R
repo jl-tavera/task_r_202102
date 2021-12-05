@@ -20,16 +20,21 @@ p_load(rio,
        tidyverse,
        viridis,
        sf,
-       leaflet,
+       leaflet,# Maps and Spatial Data
        osmdata,
        ggsn,
-       skimr,
+       skimr, # Descriptive Stats
        ggmap,
        tidycensus,
        raster,
        maps,
-       pixiedust,
-       outreg,
+       data.table,
+       plyr,
+       XML, # Read HTML tables
+       rvest, # Extract HTML tables
+       xml2, # Web - Scraping
+       pixiedust, # Regression Tables on Console
+       outreg, # Export Regression Tables
        broom, # tidy-coefficients
        knitr, # for kable
        mfx, # marginal effects
@@ -121,30 +126,30 @@ for(var in vars){
 # CRS a todos los objetos del punto 1.1..
 
 
-
 sf_df1 = st_as_sf(x = c_medico, coords = 'geometry', crs = "+proj=utm +zone=19 +datum=WGS84 +units=m +no_ defs")
 sf_df2 = st_as_sf(x = c_poblado, coords = 'geometry', crs = "+proj=utm +zone=19 +datum=WGS84 +units=m +no_ defs")
 sf_df3 = st_as_sf(x = mapmuse, coords = 'geometry', crs = "+proj=utm +zone=19 +datum=WGS84 +units=m +no_ defs")
 sf_df4 = st_as_sf(x = depto, coords = 'geometry', crs = "+proj=utm +zone=19 +datum=WGS84 +units=m +no_ defs")
 sf_df5 = st_as_sf(x = via, coords = 'geometry', crs = "+proj=utm +zone=19 +datum=WGS84 +units=m +no_ defs")
 
-
-leaflet() %>% addTiles() %>% 
-  addCircleMarkers(data = sf_df1, color = 'purple') %>%
-  addCircleMarkers(data = sf_df3, color = 'red')  %>%
-  addPolygons(data=sf_df2, weight = 0, fillColor = "yellow")  %>%
-  addPolygons(data=sf_df4, weight = 0, fillColor = "green", opacity	= 0.5)  %>%
-  addPolygons(data=sf_df5, weight = 2, fillColor = "blue")  
-
 #Operaciones Geométricas
 
 # 1.4.1 Use el objeto depto para hacer cliping y dejar los puntos de mapmuse que están 
 # debajo del polígono de Norte de Santander.
 
+#Hacemos el clipping dejando las coordenadas dentro del departamentos
 
+mapmuse = mapmuse[depto,] 
+
+#Hacemos crop para el clipping final usando el polígono del departamento. Como podemos ver, 
+#terminamos con la mimsma cantidad de observaciones 874 que con el filtro de municipio
+#por lo que el clipping se ha hecho correctamente.
+
+mapmuse_crop = st_crop(mapmuse,depto)
 
 #1.4.2 Del objeto c poblado, seleccione cualquier municipio, use este polígono y el objeto via,
 # para calcular el largo de las vías en el centro poblado que seleccionó.
+
 
 # Pintar Mapas
 
@@ -153,8 +158,17 @@ leaflet() %>% addTiles() %>%
 # los centros poblados,  el polígono del departamento de Norte de Santander y los
 # hospitales y puestos de salud del objeto _medicos.
 
+leaflet() %>% addTiles() %>% 
+  addCircleMarkers(data = sf_df1, color = 'purple') %>%
+  addCircleMarkers(data = sf_df3, color = 'red')  %>%
+  addPolygons(data=sf_df2, weight = 0, fillColor = "yellow")  %>%
+  addPolygons(data=sf_df4, weight = 0, fillColor = "green", opacity	= 0.5)  %>%
+  addPolygons(data=sf_df5, weight = 2, fillColor = "blue")  
+
 # 1.5.2 Use las librerías ggplot, ggsn y las demás que considere necesarias para visualizar en un mismo mapa:
 
+c_medico=c_medico%>%mutate(centro="C. Médico")
+c_poblado=c_poblado%>%mutate(centro="C. Poblado")
 
 #=====================#
 # Punto 2 Regresiones #
@@ -162,69 +176,138 @@ leaflet() %>% addTiles() %>%
 
 #2.1. Importe el archivo data/outpu/df_mapmuse.rds  
 
-mapmuse_reg = readRDS("task_3/data/input/victimas_map-muse.rds")
+mapmuse_reg = readRDS("task_3/data/output/f_mapmuse.rds")
 
 #estime un modelo de probabilidad lineal en el que fallecido es la variable dependiente.
 #Y use las demás variables como variables explicativas.
 
-# Generamos la variable dicótoma del estado 1 si fallece, 0 de lo contrario
-mapmuse_reg = mapmuse_reg %>% mutate(estado = ifelse(estado=='Muerto',1,0))
-
-# Para la regresión del modelo de probabilidad lineal, es necesario enfatizar dos puntos: 
-#   1. Al tratarse de  variables no continuas, es necesaria tratarlas a todas como categóricas
-#   2. Incluir los codigos municipales (aunque sea como variable categórica daña la regresión)
+# Las únicas variables continuas son las distancias, el resto es necesario tratarlas como categóricas
 
 
-ols = lm(estado ~ as.factor(tipo_accidente) 
+ols = lm(fallecido ~ as.factor(tipo_accidente) 
                         + as.factor(year)  
                         + as.factor(month)
                         + as.factor(condicion)
                         + as.factor(genero)
-                        + as.factor(actividad),              
+                        + as.factor(actividad)
+                        + as.factor(cod_mpio)
+                        + dist_vias
+                        + dist_cpoblado
+                        + dist_hospi,              
                  data = mapmuse_reg) 
 
-#Almacene los resultados de la estimación en un objeto llamado ols.
 
-ols %>% summary()
 
 # 2.2. Exporte a la carpeta views los gráficos con los coeficientes (coef-plot) de las estimaciones.
 
-# Usamos la librería de pixiedust para crear una regr
+# Usamos la librería de pixiedust para crear una regresión en la consola 
 
 dust(ols) %>% 
   sprinkle(cols = c("estimate", "std.error", "statistic"), round = 2) %>%
   sprinkle(cols = "p.value", fn = quote(pvalString(value))) %>% 
   sprinkle_colnames("Term", "Coefficient", "SE", "T-statistic", "P-value")
 
+# Análogamente usamos la función de outreg para crear un objeto con la regresión
+# Y lo exportamos en formato latex con cat
 
 export_ols <- outreg(ols, digits = 3)
 cat(as.matrix(export_ols) , file = 'task_3/views/Reg/ols.tex')
+
+#De igual forma, usamos stargazar para exportar una tabla en forma .text
+
+stargazer(ols,
+          type= 'text',
+          df = FALSE,
+          digits = 3, 
+          out = paste0('task_3/views/Reg/ols.text'))
+
+# Por otro lado, para las gráficas podemos hacer unas para las variables categóricas y continuas
+
+#Categóricas
+
+# Meses
+
+graph_1=modelplot(ols,coef_omit = "Intercept|actividad|year|genero|condicion|tipo_accidente|cod_mpio|dist_hospi|dist_vias|dist_cpoblado",color="blue") + 
+  labs(title = "Prob. Fallecimiento" , subtitle = "Months")
+
+graph_1
+
+ggsave(plot=graph_1, file = "task_3/views/Reg/Months.jpeg")
+
+# Cod_mpio
+
+graph_2=modelplot(ols,coef_omit = "Intercept|actividad|year|genero|condicion|tipo_accidente|month|dist_hospi|dist_vias|dist_cpoblado",color="red") + 
+  labs(title = "Prob. Fallecimiento" , subtitle = "Cod_mpio")
+
+graph_2
+
+ggsave(plot=graph_2, file = "task_3/views/Reg/Cod_mpio.jpeg")
+
+# Años
+
+graph_3=modelplot(ols,coef_omit = "Intercept|actividad|cod_mpio|genero|condicion|tipo_accidente|month|dist_hospi|dist_vias|dist_cpoblado",color="green") + 
+  labs(title = "Prob. Fallecimiento" , subtitle = "Años")
+
+graph_3
+
+ggsave(plot=graph_3, file = "task_3/views/Reg/Years.jpeg")
+
+#Dummys
+
+# Tipos de Accdiente, Genero, Condicion
+
+graph_4=modelplot(ols,coef_omit = "Intercept|actividad|year|cod_mpio|month|dist_hospi|dist_vias|dist_cpoblado",color="yellow") + 
+  labs(title = "Prob. Fallecimiento" , subtitle = "Tipo de Accidente")
+
+graph_4
+
+ggsave(plot=graph_4, file = "task_3/views/Reg/Dummys.jpeg")
+
+#Continuas
+
+#Distancias
+
+graph_5=modelplot(ols,coef_omit = "Intercept|actividad|year|genero|condicion|tipo_accidente|cod_mpio|month",color="purple") + 
+  labs(title = "Prob. Fallecimiento" , subtitle = "Distancias")
+
+graph_5
+
+ggsave(plot=graph_5, file = "task_3/views/Reg/Distance.jpeg")
 
 
 #2.3. Ahora estime la ecuación del punto 2.1. usando un modelo logit y un modelo probit, almacene los
 # resultados de las estimaciones en dos objetos llamados logit y probit respectivamente.
 
-logit = glm(estado ~ as.factor(tipo_accidente) 
-           + as.factor(year)  
-           + as.factor(month)
-           + as.factor(condicion)
-           + as.factor(genero)
-           + as.factor(actividad),              
-           data = mapmuse_reg, 
-           family = binomial(link="logit")) 
-
-
-probit = glm(estado ~ as.factor(tipo_accidente) 
+logit = glm(fallecido ~ as.factor(tipo_accidente) 
             + as.factor(year)  
             + as.factor(month)
             + as.factor(condicion)
             + as.factor(genero)
-            + as.factor(actividad),              
-            data = mapmuse_reg, 
+            + as.factor(actividad)
+            + as.factor(cod_mpio)
+            + dist_vias
+            + dist_cpoblado
+            + dist_hospi,              
+            data = mapmuse_reg,
+           family = binomial(link="logit")) 
+
+
+probit = glm(fallecido ~ as.factor(tipo_accidente) 
+            + as.factor(year)  
+            + as.factor(month)
+            + as.factor(condicion)
+            + as.factor(genero)
+            + as.factor(actividad)
+            + as.factor(cod_mpio)
+            + dist_vias
+            + dist_cpoblado
+            + dist_hospi,              
+            data = mapmuse_reg,
             family = binomial(link="probit")) 
 
 # 2.4. Exporte los resultados de los tres modelos en una misma tabla usando la función outreg.
 
+#
 
 stargazer(ols,
           probit,
@@ -242,7 +325,25 @@ cat(as.matrix(export_models) , file = 'task_3/views/Reg/models.tex')
 # 2.5. De los objetos logit y probit y exporte a la carpeta views dos gráficos con el efecto marginal 
 # de la distancia a un centro medico sobre la probabilidad de fallecer.
 
+#Usamos la función de margins para los efectos marginales y la opción de tidy para organizar los datos
+# De igual forma para eliminar los NAs usamos un filter
 
+logit_margins = margins(logit)
+logit_margins %>% tidy(conf.int = TRUE)
+logit_margins=logit_margins %>% filter(select=c(vector))
+
+probit_margins = margins(probit)
+probit_margins %>% tidy(conf.int = TRUE)
+probit_margins=probit_margins%>%filter(select=c(vector))
+
+margins = list('Logit' = logit_margins , 'Probit' = probit_margins, 'OLS '= ols)
+
+margins_plot =modelplot(margins,coef_omit = "Intercept|actividad|year|genero|condicion|tipo_accidente|month|cod_mpio|dist_vias|dist_cpoblado") +
+   labs(title = "Prob. Fallecimiento" , subtitle = "Efectos marginales dist_hospi Probit, Logit y OLS") + theme_bw()
+
+margins_plot
+
+ggsave(plot=margins_plot, file = "task_3/views/Reg/margins_plot.jpeg")
 
 
 #=======================#
@@ -250,14 +351,28 @@ cat(as.matrix(export_models) , file = 'task_3/views/Reg/models.tex')
 #=======================#
 
 #3.1. Desde la consola de Rstudio lea la siguiente url https://es. wikipedia.org/wiki/Departamentos_de_Colombia
-# y cree un objeto que contenga el HTML de la página como un objeto tml_document.
+# y cree un objeto que contenga el HTML de la página como un objeto html_document.
 
+myurl = "https://es.wikipedia.org/wiki/Departamentos_de_Colombia"
+myhtml = read_html(myurl)
+class(myhtml)
 
-# 3.2. Use el rpath para extraer el título de la página (Departamentos de Colombia).
+# 3.2. Use el xpath para extraer el título de la página (Departamentos de Colombia).
 
+myhtml %>% html_nodes(xpath = '//*[@id="firstHeading"]/text()')
 
 # 3.3. Extraiga la tabla que contiene los departamentos de Colombia.
 
+#Lo anterior lo podemos hacer con el paquete de rvest
+
+tabla = myhtml %>% html_nodes('table') 
+departamentos = tabla[4] %>% html_table(header = T,fill=T)  %>% as.data.frame()
+
+# O análogamente, con el paquete de XML
+
+parse = read_html(myurl) %>% htmlParse()
+tabla_xml = parse %>% readHTMLTable(header = T)
+departamentos_xml = tabla_xml[[4]]
 
 #======================#
 # Referencias & Ayudas #

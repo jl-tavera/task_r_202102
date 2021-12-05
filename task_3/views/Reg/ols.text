@@ -1,0 +1,227 @@
+
+================================================================================
+                                                         Dependent variable:    
+                                                     ---------------------------
+                                                              fallecido         
+--------------------------------------------------------------------------------
+as.factor(tipo_accidente)Accidente por MUSE                    -0.011           
+                                                               (0.231)          
+                                                                                
+as.factor(year)2003                                            0.153*           
+                                                               (0.080)          
+                                                                                
+as.factor(year)2004                                           -0.236**          
+                                                               (0.094)          
+                                                                                
+as.factor(year)2005                                             0.110           
+                                                               (0.073)          
+                                                                                
+as.factor(year)2006                                             0.020           
+                                                               (0.068)          
+                                                                                
+as.factor(year)2007                                            -0.059           
+                                                               (0.077)          
+                                                                                
+as.factor(year)2008                                             0.037           
+                                                               (0.078)          
+                                                                                
+as.factor(year)2009                                            -0.014           
+                                                               (0.080)          
+                                                                                
+as.factor(year)2010                                             0.073           
+                                                               (0.085)          
+                                                                                
+as.factor(year)2011                                            -0.045           
+                                                               (0.096)          
+                                                                                
+as.factor(year)2012                                            -0.169*          
+                                                               (0.097)          
+                                                                                
+as.factor(year)2013                                            -0.143           
+                                                               (0.099)          
+                                                                                
+as.factor(year)2014                                             0.054           
+                                                               (0.115)          
+                                                                                
+as.factor(year)2015                                            -0.027           
+                                                               (0.114)          
+                                                                                
+as.factor(year)2016                                            0.405**          
+                                                               (0.161)          
+                                                                                
+as.factor(year)2017                                             0.112           
+                                                               (0.163)          
+                                                                                
+as.factor(year)2018                                            -0.118           
+                                                               (0.082)          
+                                                                                
+as.factor(year)2019                                            -0.083           
+                                                               (0.133)          
+                                                                                
+as.factor(year)2020                                            -0.046           
+                                                               (0.115)          
+                                                                                
+as.factor(month)2                                              -0.026           
+                                                               (0.076)          
+                                                                                
+as.factor(month)3                                               0.031           
+                                                               (0.080)          
+                                                                                
+as.factor(month)4                                               0.025           
+                                                               (0.080)          
+                                                                                
+as.factor(month)5                                               0.122           
+                                                               (0.077)          
+                                                                                
+as.factor(month)6                                              -0.001           
+                                                               (0.080)          
+                                                                                
+as.factor(month)7                                              0.202**          
+                                                               (0.085)          
+                                                                                
+as.factor(month)8                                               0.124           
+                                                               (0.081)          
+                                                                                
+as.factor(month)9                                               0.044           
+                                                               (0.085)          
+                                                                                
+as.factor(month)10                                             -0.057           
+                                                               (0.084)          
+                                                                                
+as.factor(month)11                                             -0.022           
+                                                               (0.089)          
+                                                                                
+as.factor(month)12                                             -0.010           
+                                                               (0.086)          
+                                                                                
+as.factor(condicion)Fuerza pública                              0.074           
+                                                               (0.098)          
+                                                                                
+as.factor(genero)Masculino                                      0.121           
+                                                               (0.084)          
+                                                                                
+as.factor(genero)Sin Información                               0.494**          
+                                                               (0.242)          
+                                                                                
+as.factor(actividad)Agricultura                                 0.021           
+                                                               (0.157)          
+                                                                                
+as.factor(actividad)Área Despejada                             -0.221           
+                                                               (0.418)          
+                                                                                
+as.factor(actividad)Cuidado de animales                        -0.042           
+                                                               (0.247)          
+                                                                                
+as.factor(actividad)Erradicador manual - PCI                    0.014           
+                                                               (0.162)          
+                                                                                
+as.factor(actividad)Fuerza pública                              0.091           
+                                                               (0.115)          
+                                                                                
+as.factor(actividad)Jugando                                     0.062           
+                                                               (0.260)          
+                                                                                
+as.factor(actividad)Manipulación                                0.414           
+                                                               (0.347)          
+                                                                                
+as.factor(actividad)Pasando, estando cerca                      0.071           
+                                                               (0.152)          
+                                                                                
+as.factor(actividad)Recogiendo comida, agua ó madera           -0.018           
+                                                               (0.159)          
+                                                                                
+as.factor(actividad)Sin Información                             0.029           
+                                                               (0.139)          
+                                                                                
+as.factor(actividad)Trabajos de casa                            0.073           
+                                                               (0.285)          
+                                                                                
+as.factor(actividad)Transito por trocha atajo                  0.538**          
+                                                               (0.241)          
+                                                                                
+as.factor(actividad)Transito por via usual                      0.168           
+                                                               (0.212)          
+                                                                                
+as.factor(actividad)Viajando                                    0.048           
+                                                               (0.419)          
+                                                                                
+as.factor(cod_mpio)54003                                      -0.466**          
+                                                               (0.227)          
+                                                                                
+as.factor(cod_mpio)54051                                       -0.673*          
+                                                               (0.353)          
+                                                                                
+as.factor(cod_mpio)54109                                      -0.727***         
+                                                               (0.270)          
+                                                                                
+as.factor(cod_mpio)54206                                      -0.548**          
+                                                               (0.222)          
+                                                                                
+as.factor(cod_mpio)54239                                        0.839           
+                                                               (0.510)          
+                                                                                
+as.factor(cod_mpio)54245                                       -0.421*          
+                                                               (0.235)          
+                                                                                
+as.factor(cod_mpio)54250                                      -0.478**          
+                                                               (0.222)          
+                                                                                
+as.factor(cod_mpio)54261                                      -0.647**          
+                                                               (0.291)          
+                                                                                
+as.factor(cod_mpio)54344                                      -0.475**          
+                                                               (0.223)          
+                                                                                
+as.factor(cod_mpio)54347                                      -0.814**          
+                                                               (0.354)          
+                                                                                
+as.factor(cod_mpio)54377                                       -0.566           
+                                                               (0.356)          
+                                                                                
+as.factor(cod_mpio)54398                                       -0.418*          
+                                                               (0.228)          
+                                                                                
+as.factor(cod_mpio)54498                                       -0.422*          
+                                                               (0.255)          
+                                                                                
+as.factor(cod_mpio)54660                                       -0.609           
+                                                               (0.554)          
+                                                                                
+as.factor(cod_mpio)54670                                       -0.432*          
+                                                               (0.222)          
+                                                                                
+as.factor(cod_mpio)54680                                      -0.797***         
+                                                               (0.275)          
+                                                                                
+as.factor(cod_mpio)54720                                       -0.387*          
+                                                               (0.227)          
+                                                                                
+as.factor(cod_mpio)54800                                      -0.446**          
+                                                               (0.218)          
+                                                                                
+as.factor(cod_mpio)54810                                       -0.316           
+                                                               (0.219)          
+                                                                                
+as.factor(cod_mpio)54820                                      -0.652**          
+                                                               (0.280)          
+                                                                                
+dist_vias                                                     -0.00000          
+                                                              (0.00001)         
+                                                                                
+dist_cpoblado                                                 -0.00001*         
+                                                              (0.00001)         
+                                                                                
+dist_hospi                                                     0.00001          
+                                                              (0.00001)         
+                                                                                
+Constant                                                        0.402           
+                                                               (0.264)          
+                                                                                
+--------------------------------------------------------------------------------
+Observations                                                     874            
+R2                                                              0.185           
+Adjusted R2                                                     0.114           
+Residual Std. Error                                             0.384           
+F Statistic                                                   2.599***          
+================================================================================
+Note:                                                *p<0.1; **p<0.05; ***p<0.01
