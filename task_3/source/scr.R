@@ -151,8 +151,9 @@ mapmuse_crop = st_crop(mapmuse,depto)
 # para calcular el largo de las vías en el centro poblado que seleccionó.
 
 
-# Pintar Mapas
 
+
+# Pintar Mapas
 
 #1.5.1 Use la función leaflet para visualizar en un mismo mapa: los polígonos de 
 # los centros poblados,  el polígono del departamento de Norte de Santander y los
@@ -169,6 +170,19 @@ leaflet() %>% addTiles() %>%
 
 c_medico=c_medico%>%mutate(centro="C. Médico")
 c_poblado=c_poblado%>%mutate(centro="C. Poblado")
+
+Map_Plot =ggplot() + 
+  geom_sf(data = depto,color="black" , fill = "white", opacity = 0.2) +
+  geom_sf(data=c_poblado,aes(color='C. Poblado'))+
+  geom_sf(data=c_medico,aes(color='C. Medico'))+
+  ggtitle("Norte de Santander: Centros Poblados y Medicos")+
+  ylab("Latitud") + xlab("Longitud") +
+  ggsn::north(data = depto,location="topright",symbol = 1)+
+  ggsn::scalebar(data = depto,dist = 20,dist_unit = "km",transform = T, model = "WGS84",location = "bottomleft")+
+  theme_light()
+
+
+ggsave(plot=Map_Plot, file = "task_3/views/Maps/Mapa.pdf",)
 
 #=====================#
 # Punto 2 Regresiones #
