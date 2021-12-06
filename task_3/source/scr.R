@@ -16,20 +16,18 @@
 rm(list=ls())
 if (!require("pacman")) install.packages("pacman") # Instalar pacman (sino está instalada)
 require(pacman) # Correr la LIbrería de Pacman 
-p_load(rio,
-       tidyverse,
-       viridis,
-       sf,
+p_load(rio,# wraps a variety of faster, more stream-lined I/O packages
+       tidyverse, # data science packages
+       viridis, # Color Maps
+       sf, # Simple Features
        leaflet,# Maps and Spatial Data
-       osmdata,
-       ggsn,
+       osmdata, # ownloading and using data from OpenStreetMap
+       ggsn, #  Improves the GIS capabilities of R
        skimr, # Descriptive Stats
-       ggmap,
-       tidycensus,
-       raster,
-       maps,
-       data.table,
-       plyr,
+       ggmap, # Spatial Visualization with ggplot2
+       maps, # Spatial data in R
+       data.table, # Fast aggregation of large data
+       plyr, # Tools for Splitting, Applying and Combining Data
        XML, # Read HTML tables
        rvest, # Extract HTML tables
        xml2, # Web - Scraping
@@ -44,6 +42,7 @@ p_load(rio,
        fixest, # hdfe regressions (feols)
        modelsummary, # Coefplot with modelplot
        stargazer) # export tables to latex
+
 if(sessionInfo()$loadedOnly$Rcpp$Version!="1.0.7") update.packages("Rcpp") # Para la librería OSM necesitamos la versión 1.0.7 de Rcpp 
 Sys.setlocale("LC_CTYPE", "en_US.UTF-8") # Encoding UTF-8
 
@@ -132,6 +131,8 @@ sf_df3 = st_as_sf(x = mapmuse, coords = 'geometry', crs = "+proj=utm +zone=19 +d
 sf_df4 = st_as_sf(x = depto, coords = 'geometry', crs = "+proj=utm +zone=19 +datum=WGS84 +units=m +no_ defs")
 sf_df5 = st_as_sf(x = via, coords = 'geometry', crs = "+proj=utm +zone=19 +datum=WGS84 +units=m +no_ defs")
 
+#NOTA: Lo anterior también se puede hacer con st_transform() sin embargo decidimos usar este método
+
 #Operaciones Geométricas
 
 # 1.4.1 Use el objeto depto para hacer cliping y dejar los puntos de mapmuse que están 
@@ -156,10 +157,12 @@ mapmuse_crop = st_crop(mapmuse,depto)
 cod <- readline("Inserte el código del municipio: ") 
 
 # Se filtran los centros poblados correspondientes al código del municipio y se hace cliping
+
 c_poblados_mpio =c_poblado %>% filter(codmpio== strtoi(cod))
 via_mpio = st_crop(via,c_poblados_mpio)
 
 # Se guarda la variabe length como el length via 
+
 via_mpio =via_mpio%>%mutate(length_via="")
 via_mpio$largo_de_via=st_length(via_mpio)
 
@@ -179,8 +182,12 @@ leaflet() %>% addTiles() %>%
 
 # 1.5.2 Use las librerías ggplot, ggsn y las demás que considere necesarias para visualizar en un mismo mapa:
 
+#Creamos nuevas columnas que indiquen el tipo en cada uno de los objetos para las leyendas del mapa
+
 c_medico=c_medico%>%mutate(centro="C. Médico")
 c_poblado=c_poblado%>%mutate(centro="C. Poblado")
+
+#Graficamos el mapa con los datos creados 
 
 Map_Plot =ggplot() + 
   geom_sf(data = depto,color="black" , fill = "white", opacity = 0.2) +
@@ -192,6 +199,7 @@ Map_Plot =ggplot() +
   ggsn::scalebar(data = depto,dist = 20,dist_unit = "km",transform = T, model = "WGS84",location = "bottomleft")+
   theme_light()
 
+#Guardamos el mapa creado
 
 ggsave(plot=Map_Plot, file = "task_3/views/Maps/Mapa.pdf",)
 
@@ -208,7 +216,6 @@ mapmuse_reg = readRDS("task_3/data/output/f_mapmuse.rds")
 
 # Las únicas variables continuas son las distancias, el resto es necesario tratarlas como categóricas
 
-
 ols = lm(fallecido ~ as.factor(tipo_accidente) 
                         + as.factor(year)  
                         + as.factor(month)
@@ -220,8 +227,6 @@ ols = lm(fallecido ~ as.factor(tipo_accidente)
                         + dist_cpoblado
                         + dist_hospi,              
                  data = mapmuse_reg) 
-
-
 
 # 2.2. Exporte a la carpeta views los gráficos con los coeficientes (coef-plot) de las estimaciones.
 
@@ -332,7 +337,7 @@ probit = glm(fallecido ~ as.factor(tipo_accidente)
 
 # 2.4. Exporte los resultados de los tres modelos en una misma tabla usando la función outreg.
 
-#
+# Usamos la función de Stargazer para la tabla en formato .text
 
 stargazer(ols,
           probit,
@@ -360,6 +365,8 @@ logit_margins=logit_margins %>% filter(select=c(vector))
 probit_margins = margins(probit)
 probit_margins %>% tidy(conf.int = TRUE)
 probit_margins=probit_margins%>%filter(select=c(vector))
+
+#Creamos unalista con todos los coeficientes y los gráficamos de forma análoga a como hicimos anteriormente
 
 margins = list('Logit' = logit_margins , 'Probit' = probit_margins, 'OLS '= ols)
 
