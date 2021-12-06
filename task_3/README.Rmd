@@ -1,0 +1,31 @@
+---
+title: "**Task 3 - Taller de R**"
+author: "Jose Luis Tavera Ruiz"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## **Punto 1**
+
+En el punto 1, nos piden utilizar el Marco Geo Estadísitico Nacional - MGN del DANE para 
+graficar los centros médicos, centros poblados y ataques por minas antipersonas en el 
+Norte de Santander. Para lo anterior, nos pedían seguir los siguientes pasos: 
+
+### **1.1 Importar Datos Espaciales**
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
