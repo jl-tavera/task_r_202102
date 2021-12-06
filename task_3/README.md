@@ -1,6 +1,6 @@
 **Task 3 - Taller de R**
 ================
-Jose Luis Tavera Ruiz
+**Jose Luis Tavera Ruiz**
 
 ## **Punto 1: Datos Espaciales**
 
@@ -12,16 +12,57 @@ anterior, nos pedían seguir los siguientes pasos:
 ### **1.1 Importar Datos Espaciales**
 
 ``` r
-summary(cars)
+# 1.1.1 De la carpeta data/outpu importe los shapefiles de VIAS (llame al objeto via) 
+# y MGN_URB_TOPONIMIA (llame al objeto puntos). 
+
+via = st_read("task_3/data/input/VIAS.shp")
+puntos = st_read("task_3/data/input/MGN_URB_TOPONIMIA.shp")
+
+#1.1.2 Cree un nuevo objeto llamado c_medico, que contenga las observaciones del
+#objeto puntos en las que la variable CSIMBOL sea igual a "021001" "021002" o "021003".
+
+c_medico = puntos %>% filter(  CSIMBOL == "021001" 
+                             | CSIMBOL == "021002" 
+                             | CSIMBOL ==  "021003" )
+
+#1.1.3 De la carpeta data/output importe los c poblado (2017).rds (llame al objeto c poblado).
+
+c_poblado = readRDS("task_3/data/input/c poblado (2017).rds")
+
+# 1.1.3 dp deptos (2017).rds (llame al objeto depto) 
+
+depto = readRDS("task_3/data/input/dp deptos (2017).rds")
+
+# y victimas_map-muse.rds (llame al objeto mapmuse).
+
+mapmuse = readRDS("task_3/data/input/victimas_map-muse.rds")
+
+# Asegúrese de dejar únicamente código DANE >= 54001 & < 55000 
+
+c_poblado = c_poblado %>% filter( cod_dane >= 54001, cod_dane < 55000 )
+mapmuse = mapmuse %>% filter( cod_mpio >= 54001, cod_mpio < 55000 )
+
+#y el polígono de Norte de Santander.
+
+depto = depto %>% filter( cod_dpto == 54)
 ```
 
-    ##      speed           dist       
-    ##  Min.   : 4.0   Min.   :  2.00  
-    ##  1st Qu.:12.0   1st Qu.: 26.00  
-    ##  Median :15.0   Median : 36.00  
-    ##  Mean   :15.4   Mean   : 42.98  
-    ##  3rd Qu.:19.0   3rd Qu.: 56.00  
-    ##  Max.   :25.0   Max.   :120.00
+### **1.2 Atributos de los Objetos**
+
+``` r
+#Sacamos algunas estadísiticas descriptivas de los objetos de 
+
+# Centro Poblado
+skim(c_poblado)
+
+# Mapmuse
+skim(mapmuse)
+
+# Centro Médico
+skim(c_medico)
+
+# El resto de objetos son muy grandes o no tienen estadísiticas descriptivas interesantes
+```
 
 ## Including Plots
 
