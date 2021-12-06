@@ -1,14 +1,14 @@
 ---
 title: "**Task 3 - Taller de R**"
-author: "Jose Luis Tavera Ruiz"
-output: html_document
+author: "**Jose Luis Tavera Ruiz**"
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## **Punto 1**
+## **Punto 1: Datos Espaciales**
 
 En el punto 1, nos piden utilizar el Marco Geo Estadísitico Nacional - MGN del DANE para 
 graficar los centros médicos, centros poblados y ataques por minas antipersonas en el 
