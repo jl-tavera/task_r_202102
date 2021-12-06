@@ -133,7 +133,7 @@ sf_df5 = st_as_sf(x = via, coords = 'geometry', crs = "+proj=utm +zone=19 +datum
 
 #NOTA: Lo anterior también se puede hacer con st_transform() sin embargo decidimos usar este método
 
-#Operaciones Geométricas
+#1.4 Operaciones Geométricas
 
 # 1.4.1 Use el objeto depto para hacer cliping y dejar los puntos de mapmuse que están 
 # debajo del polígono de Norte de Santander.
@@ -287,7 +287,7 @@ ggsave(plot=graph_3, file = "task_3/views/Reg/Years.jpeg")
 # Tipos de Accdiente, Genero, Condicion
 
 graph_4=modelplot(ols,coef_omit = "Intercept|actividad|year|cod_mpio|month|dist_hospi|dist_vias|dist_cpoblado",color="yellow") + 
-  labs(title = "Prob. Fallecimiento" , subtitle = "Tipo de Accidente")
+  labs(title = "Prob. Fallecimiento" , subtitle = "Dummys")
 
 graph_4
 
