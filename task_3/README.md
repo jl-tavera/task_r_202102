@@ -147,6 +147,21 @@ leaflet() %>% addTiles() %>%
   addPolygons(data=sf_df5, weight = 2, fillColor = "blue")  
 ```
 
+<center>
+
+<figure>
+<img src="views/Maps/Rmd/1.png" id="id" class="class" style="width:70.0%;height:70.0%" alt="Vista en Leaflet Departamento del Norte de Santander" /><figcaption aria-hidden="true">Vista en Leaflet Departamento del Norte de Santander</figcaption>
+</figure>
+
+</center>
+<center>
+
+<figure>
+<img src="views/Maps/Rmd/2.png" id="id" class="class" style="width:70.0%;height:70.0%" alt="Vista en Leaflet ciudad de Cúcuta" /><figcaption aria-hidden="true">Vista en Leaflet ciudad de Cúcuta</figcaption>
+</figure>
+
+</center>
+
 ``` r
 # 1.5.2 Use las librerías ggplot, ggsn y las demás que considere necesarias para visualizar en un mismo mapa:
 
@@ -171,6 +186,14 @@ Map_Plot =ggplot() +
 
 ggsave(plot=Map_Plot, file = "task_3/views/Maps/Mapa.pdf",) 
 ```
+
+<center>
+
+<figure>
+<img src="views/Maps/Rmd/3.png" id="id" class="class" style="width:70.0%;height:70.0%" alt="Gráfica Departamento Norte de Santander" /><figcaption aria-hidden="true">Gráfica Departamento Norte de Santander</figcaption>
+</figure>
+
+</center>
 
 ## **Punto 2: Regresiones**
 
@@ -263,7 +286,7 @@ ggsave(plot=graph_2, file = "task_3/views/Reg/Cod_mpio.jpeg")
 <center>
 
 <figure>
-<img src="views/Reg/Cod_mpio.jpeg" id="id" class="class" style="width:70.0%;height:70.0%" alt="Coeficientes de Variable Categórica de Meses." /><figcaption aria-hidden="true">Coeficientes de Variable Categórica de Meses.</figcaption>
+<img src="views/Reg/Cod_mpio.jpeg" id="id" class="class" style="width:70.0%;height:70.0%" alt="Coeficientes de Variable Categórica de Municipio" /><figcaption aria-hidden="true">Coeficientes de Variable Categórica de Municipio</figcaption>
 </figure>
 
 </center>
@@ -282,7 +305,7 @@ ggsave(plot=graph_3, file = "task_3/views/Reg/Years.jpeg")
 <center>
 
 <figure>
-<img src="views/Reg/Years.jpeg" id="id" class="class" style="width:70.0%;height:70.0%" alt="Coeficientes de Variable Categórica de Meses." /><figcaption aria-hidden="true">Coeficientes de Variable Categórica de Meses.</figcaption>
+<img src="views/Reg/Years.jpeg" id="id" class="class" style="width:70.0%;height:70.0%" alt="Coeficientes de Variable Categórica de Años" /><figcaption aria-hidden="true">Coeficientes de Variable Categórica de Años</figcaption>
 </figure>
 
 </center>
@@ -301,7 +324,7 @@ ggsave(plot=graph_4, file = "task_3/views/Reg/Dummys.jpeg")
 <center>
 
 <figure>
-<img src="views/Reg/Dummys.jpeg" id="id" class="class" style="width:70.0%;height:70.0%" alt="Coeficientes de Variable Categórica de Meses." /><figcaption aria-hidden="true">Coeficientes de Variable Categórica de Meses.</figcaption>
+<img src="views/Reg/Dummys.jpeg" id="id" class="class" style="width:70.0%;height:70.0%" alt="Coeficientes de Variables Dummys" /><figcaption aria-hidden="true">Coeficientes de Variables Dummys</figcaption>
 </figure>
 
 </center>
@@ -320,7 +343,7 @@ ggsave(plot=graph_5, file = "task_3/views/Reg/Distance.jpeg")
 <center>
 
 <figure>
-<img src="views/Reg/Distance.jpeg" id="id" class="class" style="width:70.0%;height:70.0%" alt="Coeficientes de Variable Categórica de Meses." /><figcaption aria-hidden="true">Coeficientes de Variable Categórica de Meses.</figcaption>
+<img src="views/Reg/Distance.jpeg" id="id" class="class" style="width:70.0%;height:70.0%" alt="Coeficientes de Variables Continuas de Distancias" /><figcaption aria-hidden="true">Coeficientes de Variables Continuas de Distancias</figcaption>
 </figure>
 
 </center>
@@ -376,4 +399,67 @@ stargazer(ols,
 
 export_models <- outreg(list(ols, probit, logit), digits = 3)
 cat(as.matrix(export_models) , file = 'task_3/views/Reg/models.tex')
+```
+
+``` r
+# 2.5. De los objetos logit y probit y exporte a la carpeta views dos gráficos con el efecto marginal 
+# de la distancia a un centro medico sobre la probabilidad de fallecer.
+
+#Usamos la función de margins para los efectos marginales y la opción de tidy para organizar los datos
+# De igual forma para eliminar los NAs usamos un filter
+
+logit_margins = margins(logit)
+logit_margins %>% tidy(conf.int = TRUE)
+logit_margins=logit_margins %>% filter(select=c(vector))
+
+probit_margins = margins(probit)
+probit_margins %>% tidy(conf.int = TRUE)
+probit_margins=probit_margins%>%filter(select=c(vector))
+
+#Creamos unalista con todos los coeficientes y los gráficamos de forma análoga a como hicimos anteriormente
+
+margins = list('Logit' = logit_margins , 'Probit' = probit_margins, 'OLS '= ols)
+
+margins_plot =modelplot(margins,coef_omit = "Intercept|actividad|year|genero|condicion|tipo_accidente|month|cod_mpio|dist_vias|dist_cpoblado") +
+   labs(title = "Prob. Fallecimiento" , subtitle = "Efectos marginales dist_hospi Probit, Logit y OLS") + theme_bw()
+
+margins_plot
+
+ggsave(plot=margins_plot, file = "task_3/views/Reg/margins_plot.jpeg")
+```
+
+<center>
+
+<figure>
+<img src="views/Reg/margins_plot.jpeg" id="id" class="class" style="width:70.0%;height:70.0%" alt="Coeficientes de todas las Regresiones" /><figcaption aria-hidden="true">Coeficientes de todas las Regresiones</figcaption>
+</figure>
+
+</center>
+
+## **Punto 3: Web- Scrapping**
+
+``` r
+#3.1. Desde la consola de Rstudio lea la siguiente url https://es. wikipedia.org/wiki/Departamentos_de_Colombia
+# y cree un objeto que contenga el HTML de la página como un objeto html_document.
+
+myurl = "https://es.wikipedia.org/wiki/Departamentos_de_Colombia"
+myhtml = read_html(myurl)
+class(myhtml)
+
+# 3.2. Use el xpath para extraer el título de la página (Departamentos de Colombia).
+
+myhtml %>% html_nodes(xpath = '//*[@id="firstHeading"]/text()')
+
+# 3.3. Extraiga la tabla que contiene los departamentos de Colombia.
+
+#Lo anterior lo podemos hacer con el paquete de rvest
+
+tabla = myhtml %>% html_nodes('table') 
+departamentos = tabla[4] %>% html_table(header = T,fill=T)  %>% as.data.frame()
+
+# O análogamente, con el paquete de XML
+
+parse = read_html(myurl) %>% htmlParse()
+tabla_xml = parse %>% readHTMLTable(header = T)
+departamentos_xml = tabla_xml[[4]]
 ```

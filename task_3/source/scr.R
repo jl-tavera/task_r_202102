@@ -243,13 +243,13 @@ dust(ols) %>%
 export_ols <- outreg(ols, digits = 3)
 cat(as.matrix(export_ols) , file = 'task_3/views/Reg/ols.tex')
 
-#De igual forma, usamos stargazar para exportar una tabla en forma .text
+#De igual forma, usamos stargazar para exportar una tabla en forma .html aunque tambien se puede .text
 
 stargazer(ols,
-          type= 'text',
+          type= 'html',
           df = FALSE,
           digits = 3, 
-          out = paste0('task_3/views/Reg/ols.text'))
+          out = paste0('task_3/views/Reg/ols.html'))
 
 # Por otro lado, para las gráficas podemos hacer unas para las variables categóricas y continuas
 
